@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, Input, Card, Divider, cn } from "../Components/ui";
+import { Badge, Button, Input, Card, cn } from "../Components/ui";
 import { createUser, listUsers, updateUser } from "../api/users";
 import type { User } from "../api/users";
 
@@ -173,7 +173,6 @@ export default function UsersPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
-      {/* Success Notification */}
       {success && (
         <div className="fixed top-4 right-4 z-50 animate-slideIn">
           <div className="rounded-2xl bg-gradient-to-r from-emerald-500/20 to-emerald-500/10 p-4 ring-1 ring-emerald-300/30 backdrop-blur-sm">
@@ -184,8 +183,6 @@ export default function UsersPage() {
           </div>
         </div>
       )}
-
-      {/* Header with cosmic effects */}
       <div className="relative mb-8">
         <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-cyan-500/10 rounded-3xl blur-2xl opacity-30" />
 
@@ -202,12 +199,7 @@ export default function UsersPage() {
                 ADMIN PANEL
               </Badge>
             </div>
-            <div className="mt-2 text-sm text-slate-400/80 font-mono">
-              GET /users • POST /users • PATCH /users/{`{id}`}
-            </div>
           </div>
-
-          {/* Search with cosmic effects */}
           <div className="flex items-center gap-3">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/20 via-blue-400/15 to-cyan-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -251,15 +243,12 @@ export default function UsersPage() {
           </div>
         </div>
       </div>
-
-      {/* Stats and Pagination */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="rounded-2xl bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
             <div className="text-xs text-slate-400">Total Users</div>
             <div className="text-xl font-bold text-white">{total}</div>
           </div>
-
           <div className="rounded-2xl bg-gradient-to-r from-purple-500/10 to-cyan-500/10 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
             <div className="text-xs text-slate-400">
               Page {Math.floor(offset / limit) + 1}
@@ -268,13 +257,10 @@ export default function UsersPage() {
               Showing {items.length} users
             </div>
           </div>
-
           <div className="text-sm text-slate-400 font-mono px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10">
             {filteredHint}
           </div>
         </div>
-
-        {/* Pagination Controls */}
         <div className="flex items-center gap-2">
           <div className="text-xs text-slate-500 mr-2 hidden sm:block">
             Navigate:
@@ -307,11 +293,8 @@ export default function UsersPage() {
           </Button>
         </div>
       </div>
-
-      {/* Main Users Table */}
       <Card glowing hoverable className="mb-8 overflow-hidden border-none">
         <div className="relative overflow-hidden rounded-2xl">
-          {/* Table Header */}
           <div className="border-b border-white/10 bg-gradient-to-r from-purple-500/5 via-blue-500/3 to-cyan-500/5 backdrop-blur-sm">
             <div className="grid grid-cols-12 gap-4 px-6 py-4">
               <div className="col-span-1 text-xs font-semibold text-cyan-300/80 tracking-wider">
@@ -334,11 +317,8 @@ export default function UsersPage() {
               </div>
             </div>
           </div>
-
-          {/* Table Body */}
           <div className="divide-y divide-white/5">
             {isLoading ? (
-              // Loading skeleton
               Array.from({ length: 5 }).map((_, index) => (
                 <div key={index} className="animate-pulse px-6 py-4">
                   <div className="grid grid-cols-12 gap-4">

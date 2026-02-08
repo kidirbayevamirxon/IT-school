@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, Input, Card, Divider, cn } from "../Components/ui";
+import { Badge, Button, Input, Card, cn } from "../Components/ui";
 import { createCourse, deleteCourse, listCourses, updateCourse } from "../api/courses";
 import type { Course } from "../api/courses";
 
-// Course interface'ini extend qilamiz agar kerak bo'lsa
 interface CourseWithTimestamp extends Course {
   created_at?: string;
 }
@@ -44,7 +43,6 @@ export default function CoursesPage() {
     setIsLoading(true);
     try {
       const data = await listCourses({ offset, limit, name: q || undefined });
-      // created_at field'ini qo'shamiz agar API qaytarsa
       const itemsWithTimestamp = data.items.map(item => ({
         ...item,
         created_at: (item as any).created_at || new Date().toISOString()
@@ -73,7 +71,6 @@ export default function CoursesPage() {
     
     try {
       const created = await createCourse({ name: form.name.trim() });
-      // created_at bilan yangilaymiz
       const courseWithTimestamp = {
         ...created,
         created_at: new Date().toISOString()
@@ -82,7 +79,6 @@ export default function CoursesPage() {
       setTotal((t) => t + 1);
       setForm({ name: "" });
       
-      // Success animation
       const successBadge = document.getElementById('create-success');
       if (successBadge) {
         successBadge.classList.add('animate-pulse');
@@ -98,7 +94,6 @@ export default function CoursesPage() {
     
     try {
       const updated = await updateCourse(editing.id, { name: editing.name });
-      // created_at bilan yangilaymiz
       const updatedWithTimestamp = {
         ...updated,
         created_at: editing.created_at || new Date().toISOString()
@@ -125,7 +120,6 @@ export default function CoursesPage() {
     }
   }
 
-  // created_at formatlash uchun helper function
   const formatDate = (dateString?: string) => {
     if (!dateString) return "N/A";
     try {
@@ -146,7 +140,6 @@ export default function CoursesPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
-      {/* Header with cosmic effects */}
       <div className="relative mb-8">
         <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10 rounded-3xl blur-2xl opacity-30" />
         
@@ -155,8 +148,6 @@ export default function CoursesPage() {
             title="Quantum Courses"
             sub="GET /courses • POST /courses • PATCH /courses/{id} • DELETE /courses/{id}"
           />
-
-          {/* Search with cosmic effects */}
           <div className="flex items-center gap-3">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -188,8 +179,6 @@ export default function CoursesPage() {
           </div>
         </div>
       </div>
-
-      {/* Stats and Pagination */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="rounded-2xl bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
@@ -208,8 +197,6 @@ export default function CoursesPage() {
             {filteredHint}
           </div>
         </div>
-
-        {/* Pagination Controls */}
         <div className="flex items-center gap-2">
           <div className="text-xs text-slate-500 mr-2 hidden sm:block">Navigate:</div>
           <Button
@@ -237,10 +224,8 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {/* Main Courses Table */}
       <Card glowing hoverable className="mb-8 overflow-hidden border-none">
         <div className="relative overflow-hidden rounded-2xl">
-          {/* Table Header */}
           <div className="border-b border-white/10 bg-gradient-to-r from-cyan-500/5 via-blue-500/3 to-purple-500/5 backdrop-blur-sm">
             <div className="grid grid-cols-12 gap-4 px-6 py-4">
               <div className="col-span-1 text-xs font-semibold text-cyan-300/80 tracking-wider">ID</div>
@@ -249,11 +234,8 @@ export default function CoursesPage() {
               <div className="col-span-2 text-xs font-semibold text-cyan-300/80 tracking-wider">ACTIONS</div>
             </div>
           </div>
-
-          {/* Table Body */}
           <div className="divide-y divide-white/5">
             {isLoading ? (
-              // Loading skeleton
               Array.from({ length: 5 }).map((_, index) => (
                 <div key={index} className="animate-pulse px-6 py-4">
                   <div className="grid grid-cols-12 gap-4">
@@ -271,29 +253,22 @@ export default function CoursesPage() {
                   className="group px-6 py-4 transition-all duration-300 hover:bg-gradient-to-r hover:from-cyan-500/5 hover:via-blue-500/3 hover:to-purple-500/5"
                 >
                   <div className="grid grid-cols-12 gap-4 items-center">
-                    {/* ID */}
                     <div className="col-span-1">
                       <span className="font-mono text-sm text-cyan-300 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-2 py-1 rounded-lg">
                         #{course.id}
                       </span>
                     </div>
-                    
-                    {/* Course Name */}
                     <div className="col-span-8">
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 group-hover:scale-150 transition-transform duration-300"></div>
                         <div className="text-sm font-medium text-white">{course.name}</div>
                       </div>
                     </div>
-                    
-                    {/* Created Date */}
                     <div className="col-span-1">
                       <div className="text-xs text-slate-400">
                         {formatDate(course.created_at)}
                       </div>
                     </div>
-                    
-                    {/* Actions */}
                     <div className="col-span-2">
                       <div className="flex items-center justify-end gap-2">
                         <Button
@@ -328,7 +303,6 @@ export default function CoursesPage() {
                 </div>
               ))
             ) : (
-              // Empty state
               <div className="px-6 py-12 text-center">
                 <div className="mb-4 text-5xl opacity-30">🎓</div>
                 <div className="text-lg font-medium text-slate-300 mb-2">No courses found</div>
@@ -338,8 +312,6 @@ export default function CoursesPage() {
           </div>
         </div>
       </Card>
-
-      {/* Create New Course */}
       <Card glowing className="mb-8 border-none">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
           <div>
@@ -348,12 +320,10 @@ export default function CoursesPage() {
             </h2>
             <div className="mt-1 text-sm text-slate-400">Add a new course to the quantum system</div>
           </div>
-          
           <div className="flex items-center gap-3 mt-3 sm:mt-0">
             <div className="text-xs text-slate-500 font-mono">Status: Ready</div>
           </div>
         </div>
-
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400/15 via-blue-400/10 to-purple-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
           <div className="relative">
@@ -361,14 +331,12 @@ export default function CoursesPage() {
               <div className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"></div>
               <label className="text-xs font-medium text-cyan-300/90 tracking-wider">COURSE NAME</label>
             </div>
-            
             <Input
               value={form.name}
               onChange={(e) => setForm({ name: e.target.value })}
               placeholder="Enter course name (e.g., Quantum Physics 101)"
               className="backdrop-blur-sm"
             />
-            
             <div className="mt-2 text-xs text-slate-400">
               {form.name.length}/100 characters
               <span className={cn(
@@ -380,8 +348,6 @@ export default function CoursesPage() {
             </div>
           </div>
         </div>
-
-        {/* Create Button */}
         <div className="mt-6 flex justify-end">
           <Button 
             onClick={onCreate} 
@@ -398,18 +364,12 @@ export default function CoursesPage() {
           </Button>
         </div>
       </Card>
-
-      {/* Edit Modal - Cosmic Style */}
       {editing && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="relative w-full max-w-2xl">
-            {/* Modal glow effect */}
             <div className="absolute -inset-[2px] rounded-3xl bg-gradient-to-r from-cyan-500/30 via-blue-500/20 to-purple-500/30 blur-2xl opacity-40" />
             <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 blur opacity-50" />
-            
-            {/* Modal content */}
             <div className="relative rounded-3xl bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-900/95 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl">
-              {/* Modal header */}
               <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
                 <div>
                   <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
@@ -427,8 +387,6 @@ export default function CoursesPage() {
                   <span className="text-lg">✕</span>
                 </Button>
               </div>
-
-              {/* Modal body */}
               <div className="p-6">
                 <div className="relative group">
                   <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
@@ -450,8 +408,6 @@ export default function CoursesPage() {
                     <span className="text-slate-300">{formatDateTime(editing.created_at)}</span>
                   </div>
                 </div>
-
-                {/* Info panel */}
                 <div className="mt-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/8 to-purple-500/10 p-4 ring-1 ring-white/10">
                   <div className="flex items-center gap-3">
                     <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse"></div>
@@ -461,8 +417,6 @@ export default function CoursesPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Modal footer */}
               <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-5">
                 <Button
                   variant="secondary"

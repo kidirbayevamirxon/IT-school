@@ -1,5 +1,3 @@
-// src/components/ui/CosmicStyles.tsx
-import React from "react";
 
 export function CosmicStyles() {
   return (

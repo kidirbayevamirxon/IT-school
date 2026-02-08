@@ -378,16 +378,6 @@ export default function AuthLayout() {
                     Manage your cosmic resources efficiently
                   </p>
                 </div>
-                <div className="hidden items-center gap-3 md:flex">
-                  <div className="rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/8 to-purple-500/10 px-4 py-2 ring-1 ring-white/10">
-                    <div className="text-xs text-slate-400">Active Sessions</div>
-                    <div className="text-lg font-bold text-white">24</div>
-                  </div>
-                  <div className="rounded-2xl bg-gradient-to-r from-emerald-500/10 via-green-500/8 to-teal-500/10 px-4 py-2 ring-1 ring-white/10">
-                    <div className="text-xs text-slate-400">Uptime</div>
-                    <div className="text-lg font-bold text-white">99.8%</div>
-                  </div>
-                </div>
               </div>
               <div className="rounded-2xl bg-gradient-to-br from-white/5 via-white/3 to-transparent p-4 md:p-6 ring-1 ring-white/10">
                 <Outlet />
@@ -427,17 +417,3 @@ export default function AuthLayout() {
     </div>
   );
 }
-
-const globalStyles = `
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(10px, -20px) rotate(5deg); }
-    50% { transform: translate(-15px, 10px) rotate(-5deg); }
-    75% { transform: translate(5px, 15px) rotate(3deg); }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
-  }
-`;
