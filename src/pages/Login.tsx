@@ -18,7 +18,6 @@ export default function LoginPage() {
   const nav = useNavigate();
   const loc = useLocation() as any;
 
-  // Kosmik partikulalar yaratish
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -33,8 +32,6 @@ export default function LoginPage() {
       });
     }
     setParticles(newParticles);
-
-    // Ekran chiroqlarini tasodifiy o'zgartirish
     const flickerInterval = setInterval(() => {
       if (Math.random() > 0.7) {
         setFlicker(true);
@@ -45,7 +42,6 @@ export default function LoginPage() {
     return () => clearInterval(flickerInterval);
   }, []);
 
-  // Partikulalar harakatini yangilash
   useEffect(() => {
     const interval = setInterval(() => {
       setParticles(prev => prev.map(p => ({
@@ -79,9 +75,6 @@ export default function LoginPage() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#04070F]">
-      {/* ===== Kosmik fon effektlari ===== */}
-      
-      {/* Uzoq yulduzlar */}
       <div className="pointer-events-none absolute inset-0">
         {particles.map((p, i) => (
           <div
@@ -98,8 +91,6 @@ export default function LoginPage() {
           />
         ))}
       </div>
-
-      {/* Gradient nebulalar */}
       <div className="pointer-events-none absolute inset-0 opacity-30">
         <div 
           className="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/10 blur-3xl" 
@@ -111,12 +102,9 @@ export default function LoginPage() {
         />
       </div>
 
-      {/* Scanlines uchun gradient asosiy fon */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-[#04070F] via-[#0A1120] to-[#071225]" />
       </div>
-
-      {/* Dynamic scanlines */}
       <div className={`pointer-events-none absolute inset-0 opacity-[0.03] ${flicker ? 'opacity-[0.06]' : ''}`} 
            style={{ 
              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(34, 211, 238, 0.1) 1px, rgba(34, 211, 238, 0.1) 2px)`,
@@ -124,8 +112,6 @@ export default function LoginPage() {
              animation: 'scan 8s linear infinite'
            }} 
       />
-
-      {/* Grid pattern */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.1]">
         <div className="absolute inset-0" style={{
           backgroundImage: `
@@ -136,8 +122,6 @@ export default function LoginPage() {
           maskImage: 'radial-gradient(circle at center, black 20%, transparent 70%)'
         }} />
       </div>
-
-      {/* Top HUD Panel */}
       <div className="relative z-30 mx-auto flex max-w-6xl items-center justify-between px-6 py-5 border-b border-white/5">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -156,21 +140,16 @@ export default function LoginPage() {
 
           <div className="leading-tight">
             <div className="text-[10px] tracking-[0.35em] text-slate-400 font-mono">
-              COSMIC ADMIN
+              KUNGRAD IT SCHOOL
             </div>
             <div className="text-sm font-semibold text-white">
               <span className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
-                Quantum Login Console
+                LOGIN PORTAL
               </span>
             </div>
           </div>
         </div>
-
         <div className="hidden items-center gap-4 md:flex">
-          <div className="text-[11px] text-slate-400 font-mono">
-            <span className="text-slate-500">endpoint:</span>{" "}
-            <span className="text-cyan-300/90">POST /auth/login</span>
-          </div>
           <div className="relative">
             <div className="absolute -inset-1 bg-cyan-500 rounded-full blur opacity-20"></div>
             <Badge tone="cyan" className="relative backdrop-blur-sm">
@@ -185,15 +164,10 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-
-      {/* Main Content Area */}
       <div className="relative z-20 grid min-h-[calc(100vh-96px)] place-items-center px-4 pb-10">
         <div className="relative w-full max-w-md">
-          {/* Outer Glow Effect */}
           <div className="absolute -inset-[3px] rounded-[40px] bg-gradient-to-r from-cyan-500/50 via-blue-500/30 to-purple-500/30 blur-xl opacity-60 animate-pulse" style={{animationDuration: '3s'}} />
           <div className="absolute -inset-[2px] rounded-[40px] bg-gradient-to-r from-cyan-400/40 via-blue-400/20 to-purple-400/20 blur-lg" />
-          
-          {/* Main Card */}
           <form
             onSubmit={submit}
             className={cn(
@@ -204,7 +178,6 @@ export default function LoginPage() {
               "border border-white/5"
             )}
           >
-            {/* Animated Background Pattern */}
             <div className="absolute inset-0 opacity-5">
               <div className="absolute inset-0" style={{
                 backgroundImage: `radial-gradient(circle at 30% 30%, rgba(34,211,238,0.3) 0px, transparent 50%),
@@ -213,11 +186,7 @@ export default function LoginPage() {
                 animation: 'moveGradient 15s ease infinite'
               }} />
             </div>
-
-            {/* Top Shine Effect */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-transparent opacity-20" />
-
-            {/* Header */}
             <div className="mb-8 relative">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -233,7 +202,6 @@ export default function LoginPage() {
                     Enter your credentials to continue
                   </div>
                 </div>
-
                 <div className="flex flex-col items-end gap-3">
                   <Badge tone="cyan" className="backdrop-blur-sm">
                     <span className="flex items-center gap-1.5">
@@ -247,8 +215,6 @@ export default function LoginPage() {
                   <div className="text-[10px] text-slate-500 font-mono">v2.1.7</div>
                 </div>
               </div>
-
-              {/* Connection Status Line */}
               <div className="mt-6 relative">
                 <div className="absolute -inset-x-1 -inset-y-0.5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 blur rounded-2xl"></div>
                 <div className="relative flex items-center justify-between rounded-2xl bg-white/3 px-5 py-3.5 ring-1 ring-white/10 backdrop-blur-sm">
@@ -261,14 +227,9 @@ export default function LoginPage() {
                       session: <span className="text-cyan-300">initializing</span>
                     </div>
                   </div>
-                  <div className="text-[12px] text-slate-400 font-mono">
-                    protocol: <span className="text-blue-300">token_auth_v2</span>
-                  </div>
                 </div>
               </div>
             </div>
-
-            {/* Error Message */}
             {err && (
               <div className="mb-6 relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-rose-600/20 to-pink-600/20 rounded-2xl blur opacity-70 group-hover:opacity-100 transition-opacity"></div>
@@ -281,8 +242,6 @@ export default function LoginPage() {
                 </div>
               </div>
             )}
-
-            {/* Input Fields */}
             <div className="space-y-5">
               <CosmicField
                 label="login"
