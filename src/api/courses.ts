@@ -10,9 +10,28 @@ export type CourseList = {
 };
 
 export async function listCourses(params?: { offset?: number; limit?: number; name?: string }) {
-  const { data } = await http.get<CourseList>("/courses", { params });
-  return data;
+  const res = await http.get<any>("/courses", { params });
+  const data = res.data;
+
+  if (data && Array.isArray(data.items)) return data as CourseList;
+
+  if (Array.isArray(data)) {
+    return {
+      total: data.length,
+      limit: params?.limit ?? data.length,
+      offset: params?.offset ?? 0,
+      items: data as Course[],
+    } satisfies CourseList;
+  }
+
+  return {
+    total: 0,
+    limit: params?.limit ?? 20,
+    offset: params?.offset ?? 0,
+    items: [],
+  } satisfies CourseList;
 }
+
 export async function getCourse(course_id: number) {
   const { data } = await http.get<Course>(`/courses/${course_id}`);
   return data;

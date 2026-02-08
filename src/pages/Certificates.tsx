@@ -8,20 +8,71 @@ import {
 } from "../api/certificates";
 import type { Certificate } from "../api/certificates";
 
+import { listCourses } from "../api/courses";
+import type { Course } from "../api/courses";
+
+import { listUsers } from "../api/users";
+import type { User } from "../api/users";
+
 export default function CertificatesPage() {
   const [items, setItems] = useState<Certificate[]>([]);
   const [total, setTotal] = useState(0);
+
   const [q, setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const limit = 20;
 
-  const [form, setForm] = useState({ course_name: "", course_id: 0, user_id: 0 });
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const [form, setForm] = useState({
+    course_id: 0,
+    user_id: 0,
+  });
+
   const [editing, setEditing] = useState<Certificate | null>(null);
 
+  // ✅ maps tepada (onCreate/onUpdate ishlatadi)
+  const courseMap = useMemo(
+    () => new Map<number, string>(courses.map((c) => [c.id, c.name])),
+    [courses]
+  );
+  const userMap = useMemo(
+    () =>
+      new Map<number, string>(
+        users.map((u) => [
+          u.id,
+          `${u.last_name} ${u.first_name} (${u.login})`,
+        ])
+      ),
+    [users]
+  );
+
   async function load() {
-    const data = await listCertificates({ offset, limit, course_name: q || undefined });
+    const data = await listCertificates({
+      offset,
+      limit,
+      course_name: q || undefined,
+    });
     setItems(data.items);
     setTotal(data.total);
+  }
+
+  async function loadOptions() {
+    const [c, u] = await Promise.all([
+      listCourses({ offset: 0, limit: 200 }),
+      listUsers({ offset: 0, limit: 200 }),
+    ]);
+
+    setCourses(c.items);
+    setUsers(u.items);
+
+    // default select
+    setForm((p) => ({
+      ...p,
+      course_id: p.course_id || c.items?.[0]?.id || 0,
+      user_id: p.user_id || u.items?.[0]?.id || 0,
+    }));
   }
 
   useEffect(() => {
@@ -29,28 +80,50 @@ export default function CertificatesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
+  useEffect(() => {
+    loadOptions().catch(console.error);
+  }, []);
+
   const canPrev = offset > 0;
   const canNext = offset + limit < total;
 
-  const filteredHint = useMemo(() => (q ? `Filter: course_name="${q}"` : "No filters"), [q]);
+  const filteredHint = useMemo(
+    () => (q ? `Filter: course_name="${q}"` : "No filters"),
+    [q]
+  );
 
   async function onCreate() {
+    if (!form.course_id || !form.user_id) return;
+
+    const course_name = courseMap.get(form.course_id) || "";
+
     const created = await createCertificate({
-      course_name: form.course_name,
+      course_name,
       course_id: Number(form.course_id),
       user_id: Number(form.user_id),
     });
+
     setItems((p) => [created, ...p]);
-    setForm({ course_name: "", course_id: 0, user_id: 0 });
+    setTotal((t) => t + 1);
+
+    setForm({
+      course_id: courses?.[0]?.id || 0,
+      user_id: users?.[0]?.id || 0,
+    });
   }
 
   async function onUpdate() {
     if (!editing) return;
+
+    // ✅ course_name ni doim mapdan olamiz
+    const course_name = courseMap.get(editing.course_id) || editing.course_name || "";
+
     const updated = await updateCertificate(editing.id, {
-      course_name: editing.course_name,
+      course_name,
       course_id: editing.course_id,
       user_id: editing.user_id,
     });
+
     setItems((p) => p.map((x) => (x.id === updated.id ? updated : x)));
     setEditing(null);
   }
@@ -67,6 +140,7 @@ export default function CertificatesPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 lg:px-8">
+      {/* Header */}
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="text-xl font-semibold text-slate-100">Certificates</div>
@@ -76,25 +150,45 @@ export default function CertificatesPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="course_name filter..." />
-          <Button variant="secondary" onClick={() => { setOffset(0); load(); }}>
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="course_name filter..."
+          />
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setOffset(0);
+              load();
+            }}
+          >
             Search
           </Button>
         </div>
       </div>
 
+      {/* Paging */}
       <div className="mb-3 flex items-center justify-between">
         <div className="text-sm text-slate-400">{filteredHint}</div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" disabled={!canPrev} onClick={() => setOffset((x) => Math.max(0, x - limit))}>
+          <Button
+            variant="secondary"
+            disabled={!canPrev}
+            onClick={() => setOffset((x) => Math.max(0, x - limit))}
+          >
             Prev
           </Button>
-          <Button variant="secondary" disabled={!canNext} onClick={() => setOffset((x) => x + limit)}>
+          <Button
+            variant="secondary"
+            disabled={!canNext}
+            onClick={() => setOffset((x) => x + limit)}
+          >
             Next
           </Button>
         </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-hidden rounded-2xl ring-1 ring-slate-800">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-slate-950">
@@ -108,18 +202,28 @@ export default function CertificatesPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400"></th>
               </tr>
             </thead>
+
             <tbody>
               {items.map((x) => (
-                <tr key={x.id} className="border-b border-slate-900 hover:bg-slate-900/35">
+                <tr
+                  key={x.id}
+                  className="border-b border-slate-900 hover:bg-slate-900/35"
+                >
                   <td className="px-4 py-3 font-mono text-xs text-slate-300">{x.id}</td>
                   <td className="px-4 py-3 text-sm text-slate-100">{x.course_name}</td>
                   <td className="px-4 py-3 text-sm text-slate-300">{x.course_id}</td>
                   <td className="px-4 py-3 text-sm text-slate-300">{x.user_id}</td>
-                  <td className="px-4 py-3 text-sm text-slate-400">{new Date(x.created_at).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-slate-400">
+                    {new Date(x.created_at).toLocaleString()}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <Button variant="ghost" onClick={() => setEditing({ ...x })}>Edit</Button>
-                      <Button variant="ghost" onClick={() => onDownload(x.id)}>Download</Button>
+                      <Button variant="ghost" onClick={() => setEditing({ ...x })}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" onClick={() => onDownload(x.id)}>
+                        Download
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -144,34 +248,118 @@ export default function CertificatesPage() {
           <Badge tone="blue">POST /certificates</Badge>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Input label="course_name" value={form.course_name} onChange={(e) => setForm((p) => ({ ...p, course_name: e.target.value }))} />
-          <Input label="course_id" type="number" value={String(form.course_id)} onChange={(e) => setForm((p) => ({ ...p, course_id: Number(e.target.value) }))} />
-          <Input label="user_id" type="number" value={String(form.user_id)} onChange={(e) => setForm((p) => ({ ...p, user_id: Number(e.target.value) }))} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <div className="mb-1 text-xs text-slate-400">course</div>
+            <select
+              className="w-full rounded-xl bg-slate-900 px-3 py-2 text-slate-100 ring-1 ring-slate-800"
+              value={String(form.course_id)}
+              onChange={(e) => setForm((p) => ({ ...p, course_id: Number(e.target.value) }))}
+            >
+              {!courses.length && <option value="0">No courses</option>}
+              {courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} (#{c.id})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <div className="mb-1 text-xs text-slate-400">user</div>
+            <select
+              className="w-full rounded-xl bg-slate-900 px-3 py-2 text-slate-100 ring-1 ring-slate-800"
+              value={String(form.user_id)}
+              onChange={(e) => setForm((p) => ({ ...p, user_id: Number(e.target.value) }))}
+            >
+              {!users.length && <option value="0">No users</option>}
+              {users.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.last_name} {u.first_name} ({u.login}) • #{u.id}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="mt-4 flex justify-end">
-          <Button onClick={onCreate}>Save</Button>
+          <Button onClick={onCreate} disabled={!form.course_id || !form.user_id}>
+            Save
+          </Button>
         </div>
       </div>
 
-      {/* Edit inline modal-ish */}
+      {/* Edit modal */}
       {editing && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4">
           <div className="w-full max-w-xl rounded-2xl bg-slate-950 ring-1 ring-slate-800 shadow-xl">
             <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
-              <div className="text-base font-semibold text-slate-100">Update Certificate #{editing.id}</div>
+              <div className="text-base font-semibold text-slate-100">
+                Update Certificate #{editing.id}
+              </div>
               <Button variant="ghost" onClick={() => setEditing(null)} className="rounded-lg px-2">
                 ✕
               </Button>
             </div>
 
             <div className="px-5 py-4">
-              <div className="grid gap-3 sm:grid-cols-3">
-                <Input label="course_name" value={editing.course_name} onChange={(e) => setEditing((p) => p ? ({ ...p, course_name: e.target.value }) : p)} />
-                <Input label="course_id" type="number" value={String(editing.course_id)} onChange={(e) => setEditing((p) => p ? ({ ...p, course_id: Number(e.target.value) }) : p)} />
-                <Input label="user_id" type="number" value={String(editing.user_id)} onChange={(e) => setEditing((p) => p ? ({ ...p, user_id: Number(e.target.value) }) : p)} />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <div className="mb-1 text-xs text-slate-400">course</div>
+                  <select
+                    className="w-full rounded-xl bg-slate-900 px-3 py-2 text-slate-100 ring-1 ring-slate-800"
+                    value={String(editing.course_id)}
+                    onChange={(e) => {
+                      const id = Number(e.target.value);
+                      setEditing((p) =>
+                        p
+                          ? { ...p, course_id: id, course_name: courseMap.get(id) || "" }
+                          : p
+                      );
+                    }}
+                  >
+                    {!courses.length && <option value="0">No courses</option>}
+                    {courses.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} (#{c.id})
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="mt-2 text-xs text-slate-500">
+                    course_name:{" "}
+                    <span className="text-slate-300">
+                      {courseMap.get(editing.course_id) || editing.course_name || "-"}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="mb-1 text-xs text-slate-400">user</div>
+                  <select
+                    className="w-full rounded-xl bg-slate-900 px-3 py-2 text-slate-100 ring-1 ring-slate-800"
+                    value={String(editing.user_id)}
+                    onChange={(e) =>
+                      setEditing((p) => (p ? { ...p, user_id: Number(e.target.value) } : p))
+                    }
+                  >
+                    {!users.length && <option value="0">No users</option>}
+                    {users.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.last_name} {u.first_name} ({u.login}) • #{u.id}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="mt-2 text-xs text-slate-500">
+                    selected user:{" "}
+                    <span className="text-slate-300">
+                      {userMap.get(editing.user_id) || `#${editing.user_id}`}
+                    </span>
+                  </div>
+                </div>
               </div>
+
               <div className="mt-3 text-xs text-slate-500">
                 API: <span className="text-slate-300">PATCH /certificates/{`{id}`}</span>
               </div>

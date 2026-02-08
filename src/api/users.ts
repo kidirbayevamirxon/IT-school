@@ -40,14 +40,29 @@ export async function listUsers(params?: {
   limit?: number;
   first_name?: string;
   last_name?: string;
-  middle_name?: string;
-  birthday?: string;
-  phone?: string;
   login?: string;
   is_active?: boolean;
 }) {
-  const { data } = await http.get<UserList>("/users", { params });
-  return data;
+  const res = await http.get<any>("/users", { params });
+  const data = res.data;
+
+  if (data && Array.isArray(data.items)) return data as UserList;
+
+  if (Array.isArray(data)) {
+    return {
+      total: data.length,
+      limit: params?.limit ?? data.length,
+      offset: params?.offset ?? 0,
+      items: data as User[],
+    } satisfies UserList;
+  }
+
+  return {
+    total: 0,
+    limit: params?.limit ?? 20,
+    offset: params?.offset ?? 0,
+    items: [],
+  } satisfies UserList;
 }
 
 export async function getUser(user_id: number) {
