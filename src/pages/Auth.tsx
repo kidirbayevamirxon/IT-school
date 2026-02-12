@@ -257,6 +257,8 @@ export default function AuthLayout() {
 
   function onLogout() {
     tokenStore.clear();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     navigate("/login", { replace: true });
   }
 

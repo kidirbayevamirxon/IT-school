@@ -25,7 +25,7 @@ export type CreateCertificateBody = {
 
 export type UpdateCertificateBody = Partial<CreateCertificateBody>;
 
-export async function listCertificates(params?: { offset?: number; limit?: number; course_name?: string }) {
+export async function listCertificates(params?: { offset?: number; limit?: number; course_name?: string; id?: number }) {
   const res = await http.get<any>("/certificates", { params });
   const data = res.data;
   if (data && Array.isArray(data.items)) {

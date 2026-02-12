@@ -40,12 +40,10 @@ function normalizeTokens(raw: any) {
 export async function login(body: LoginBody) {
   const res = await http.post("/auth/login", body);
 
-  // ba'zan data ichida data bo'ladi:
   const tokens = normalizeTokens(res.data);
 
-  // ✅ agar token yo'q bo'lsa, xatoni ko'rsatamiz
   if (!tokens.access_token || !tokens.refres_token) {
-    console.log("LOGIN RESPONSE:", res.data); // devda ko'rib olasan
+    console.log("LOGIN RESPONSE:", res.data);
     throw new Error("Backend token qaytarmadi (response formatni tekshir)");
   }
 

@@ -4,12 +4,15 @@ import LoginPage from "./pages/Login";
 import CertificatesPage from "./pages/Certificates";
 import CoursesPage from "./pages/Courses";
 import UsersPage from "./pages/Users";
-
+import CertificatePage from "./pages/CertificatePage";
 export default function App() {
   return (
     <Routes>
+      {/* Public */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/certificate/:id" element={<CertificatePage />} />
 
+      {/* Protected */}
       <Route element={<AuthLayout />}>
         <Route path="/" element={<Navigate to="/certificates" replace />} />
         <Route path="/certificates" element={<CertificatesPage />} />
@@ -21,3 +24,4 @@ export default function App() {
     </Routes>
   );
 }
+

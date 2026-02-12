@@ -20,7 +20,7 @@ export default function CertificatesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState<number | null>(null);
 
-  const [q, setQ] = useState("");
+  const [q, _setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const limit = 20;
 
@@ -166,12 +166,12 @@ export default function CertificatesPage() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="relative mb-8">
-        <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10 rounded-3xl blur-2xl opacity-30" />
+        <div className="absolute -inset-4 bg-linear-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10 rounded-3xl blur-2xl opacity-30" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <div className="h-2 w-12 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"></div>
-              <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
+              <div className="h-2 w-12 rounded-full bg-linear-to-r from-cyan-400 to-blue-400"></div>
+              <h1 className="text-2xl font-bold tracking-tight bg-linear-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
                 Quantum Certificates
               </h1>
               <Badge tone="cosmic" pulsating className="hidden sm:flex">
@@ -179,9 +179,9 @@ export default function CertificatesPage() {
               </Badge>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+              <div className="absolute -inset-1 bg-linear-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
@@ -201,7 +201,7 @@ export default function CertificatesPage() {
                     />
                   </svg>
                 }
-                className="min-w-[280px] backdrop-blur-sm"
+                className="min-w-70 backdrop-blur-sm"
               />
             </div>
             <Button
@@ -219,16 +219,16 @@ export default function CertificatesPage() {
                 Search
               </span>
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <div className="rounded-2xl bg-gradient-to-r from-white/5 to-white/3 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
+          <div className="rounded-2xl bg-linear-to-r from-white/5 to-white/3 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
             <div className="text-xs text-slate-400">Total Certificates</div>
             <div className="text-xl font-bold text-white">{total}</div>
           </div>
-          <div className="rounded-2xl bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
+          <div className="rounded-2xl bg-linear-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-sm px-4 py-2 ring-1 ring-white/10">
             <div className="text-xs text-slate-400">
               Page {Math.floor(offset / limit) + 1}
             </div>
@@ -274,7 +274,7 @@ export default function CertificatesPage() {
       </div>
       <Card glowing hoverable className="mb-8 overflow-hidden border-none">
         <div className="relative overflow-hidden rounded-2xl">
-          <div className="border-b border-white/10 bg-gradient-to-r from-cyan-500/5 via-blue-500/3 to-purple-500/5 backdrop-blur-sm">
+          <div className="border-b border-white/10 bg-linear-to-r from-cyan-500/5 via-blue-500/3 to-purple-500/5 backdrop-blur-sm">
             <div className="grid grid-cols-12 gap-4 px-6 py-4">
               <div className="col-span-1 text-xs font-semibold text-cyan-300/80 tracking-wider">
                 ID
@@ -314,11 +314,11 @@ export default function CertificatesPage() {
               items.map((x) => (
                 <div
                   key={x.id}
-                  className="group px-6 py-4 transition-all duration-300 hover:bg-gradient-to-r hover:from-cyan-500/5 hover:via-blue-500/3 hover:to-purple-500/5"
+                  className="group px-6 py-4 transition-all duration-300 hover:bg-linear-to-r hover:from-cyan-500/5 hover:via-blue-500/3 hover:to-purple-500/5"
                 >
                   <div className="grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-1">
-                      <span className="font-mono text-sm text-cyan-300 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-2 py-1 rounded-lg">
+                      <span className="font-mono text-sm text-cyan-300 bg-linear-to-r from-cyan-500/10 to-blue-500/10 px-2 py-1 rounded-lg">
                         #{x.id}
                       </span>
                     </div>
@@ -400,7 +400,7 @@ export default function CertificatesPage() {
       <Card glowing className="mb-8 border-none">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
           <div>
-            <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
+            <h2 className="text-lg font-bold bg-linear-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
               Create New Certificate
             </h2>
             <div className="mt-1 text-sm text-slate-400">
@@ -416,10 +416,10 @@ export default function CertificatesPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400/15 via-blue-400/10 to-purple-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute -inset-1 bg-linear-to-r from-cyan-400/15 via-blue-400/10 to-purple-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
             <div className="relative">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-linear-to-r from-cyan-400 to-blue-400"></div>
                 <label className="text-xs font-medium text-cyan-300/90 tracking-wider">
                   COURSE
                 </label>
@@ -427,7 +427,7 @@ export default function CertificatesPage() {
 
               <div className="relative">
                 <select
-                  className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
+                  className="w-full rounded-2xl bg-linear-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
                     ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
                     hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40
                     appearance-none cursor-pointer"
@@ -473,10 +473,10 @@ export default function CertificatesPage() {
             </div>
           </div>
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="absolute -inset-1 bg-linear-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
             <div className="relative">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-linear-to-r from-purple-400 to-cyan-400"></div>
                 <label className="text-xs font-medium text-cyan-300/90 tracking-wider">
                   USER
                 </label>
@@ -484,7 +484,7 @@ export default function CertificatesPage() {
 
               <div className="relative">
                 <select
-                  className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
+                  className="w-full rounded-2xl bg-linear-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
                     ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
                     hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40
                     appearance-none cursor-pointer"
@@ -543,19 +543,19 @@ export default function CertificatesPage() {
                 🚀
               </span>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-blue-500/0 to-purple-500/0 group-hover:from-cyan-500/20 group-hover:via-blue-500/15 group-hover:to-purple-500/20 transition-all duration-500"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-cyan-500/0 via-blue-500/0 to-purple-500/0 group-hover:from-cyan-500/20 group-hover:via-blue-500/15 group-hover:to-purple-500/20 transition-all duration-500"></div>
           </Button>
         </div>
       </Card>
       {editing && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="relative w-full max-w-2xl">
-            <div className="absolute -inset-[2px] rounded-3xl bg-gradient-to-r from-cyan-500/30 via-blue-500/20 to-purple-500/30 blur-2xl opacity-40" />
-            <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 blur opacity-50" />
-            <div className="relative rounded-3xl bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-900/95 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl">
+            <div className="absolute -inset-0.5 rounded-3xl bg-linear-to-r from-cyan-500/30 via-blue-500/20 to-purple-500/30 blur-2xl opacity-40" />
+            <div className="absolute -inset-px rounded-3xl bg-linear-to-r from-cyan-400/20 via-blue-400/15 to-purple-400/20 blur opacity-50" />
+            <div className="relative rounded-3xl bg-linear-to-br from-slate-900/95 via-slate-900/90 to-slate-900/95 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl">
               <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
                 <div>
-                  <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
+                  <h3 className="text-xl font-bold bg-linear-to-r from-cyan-200 via-white to-blue-200 bg-clip-text text-transparent">
                     Update Certificate
                   </h3>
                   <div className="mt-1 text-sm text-slate-400 font-mono">
@@ -578,7 +578,7 @@ export default function CertificatesPage() {
                     </label>
                     <div className="relative">
                       <select
-                        className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3.5 text-slate-100 
+                        className="w-full rounded-2xl bg-linear-to-br from-white/10 via-white/8 to-white/5 px-4 py-3.5 text-slate-100 
                           ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
                           hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40"
                         value={String(editing.course_id)}
@@ -621,7 +621,7 @@ export default function CertificatesPage() {
                     </label>
                     <div className="relative">
                       <select
-                        className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3.5 text-slate-100 
+                        className="w-full rounded-2xl bg-linear-to-br from-white/10 via-white/8 to-white/5 px-4 py-3.5 text-slate-100 
                           ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
                           hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40"
                         value={String(editing.user_id)}
@@ -650,9 +650,9 @@ export default function CertificatesPage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/8 to-purple-500/10 p-4 ring-1 ring-white/10">
+                <div className="mt-6 rounded-2xl bg-linear-to-r from-cyan-500/10 via-blue-500/8 to-purple-500/10 p-4 ring-1 ring-white/10">
                   <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse"></div>
+                    <div className="h-2 w-2 rounded-full bg-linear-to-r from-cyan-400 to-blue-400 animate-pulse"></div>
                     <div className="text-sm text-slate-300">
                       Certificate ID:{" "}
                       <span className="font-bold text-cyan-300">
@@ -690,7 +690,7 @@ export default function CertificatesPage() {
                       ⚡
                     </span>
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-blue-500/0 to-purple-500/0 group-hover:from-cyan-500/20 group-hover:via-blue-500/15 group-hover:to-purple-500/20 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-linear-to-r from-cyan-500/0 via-blue-500/0 to-purple-500/0 group-hover:from-cyan-500/20 group-hover:via-blue-500/15 group-hover:to-purple-500/20 transition-all duration-500"></div>
                 </Button>
               </div>
             </div>
