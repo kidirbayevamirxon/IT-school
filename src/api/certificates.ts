@@ -5,10 +5,13 @@ export type Certificate = {
   course_name: string;
   course_id: number;
   user_id: number;
+  start_time: string;
+  end_time: string;
   file_path: string;
   created_at: string;
   updated_at: string;
 };
+
 
 export type CertificateList = {
   total: number;
@@ -21,6 +24,8 @@ export type CreateCertificateBody = {
   course_name: string;
   course_id: number;
   user_id: number;
+  start_time: string;
+  end_time: string;  
 };
 
 export type UpdateCertificateBody = Partial<CreateCertificateBody>;

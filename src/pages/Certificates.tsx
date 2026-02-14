@@ -7,10 +7,8 @@ import {
   downloadCertificateFile,
 } from "../api/certificates";
 import type { Certificate } from "../api/certificates";
-import { useRef } from "react";
 import { listCourses } from "../api/courses";
 import type { Course } from "../api/courses";
-
 import { listUsers } from "../api/users";
 import type { User } from "../api/users";
 
@@ -19,17 +17,16 @@ export default function CertificatesPage() {
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState<number | null>(null);
-
   const [q, _setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const limit = 20;
-
   const [courses, setCourses] = useState<Course[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-
   const [form, setForm] = useState({
     course_id: 0,
     user_id: 0,
+    start_time: new Date().toISOString().slice(0, 16) + ":00",
+    end_time: new Date().toISOString().slice(0, 16) + ":00",
   });
   const [editing, setEditing] = useState<Certificate | null>(null);
 
@@ -104,24 +101,23 @@ export default function CertificatesPage() {
         course_name,
         course_id: Number(form.course_id),
         user_id: Number(form.user_id),
+        start_time: form.start_time,
+        end_time: form.end_time,
       });
 
       setItems((p) => [created, ...p]);
       setTotal((t) => t + 1);
 
+      // Formani to'g'ri formatda tiklash
+      const now = new Date();
+      const formattedDate = now.toISOString().slice(0, 16) + ":00";
+
       setForm({
         course_id: courses?.[0]?.id || 0,
         user_id: users?.[0]?.id || 0,
+        start_time: formattedDate,
+        end_time: formattedDate,
       });
-
-      const successBadgeRef = useRef<HTMLDivElement | null>(null);
-      if (successBadgeRef.current) {
-        successBadgeRef.current.classList.add("animate-pulse");
-        setTimeout(
-          () => successBadgeRef.current?.classList.remove("animate-pulse"),
-          2000,
-        );
-      }
     } catch (error) {
       console.error("Failed to create certificate:", error);
     }
@@ -137,6 +133,8 @@ export default function CertificatesPage() {
         course_name,
         course_id: editing.course_id,
         user_id: editing.user_id,
+        start_time: editing.start_time,
+        end_time: editing.end_time,
       });
 
       setItems((p) => p.map((x) => (x.id === updated.id ? updated : x)));
@@ -526,6 +524,56 @@ export default function CertificatesPage() {
               </div>
             </div>
           </div>
+          <div className="relative group col-span-2">
+            <div className="absolute -inset-1 bg-linear-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="relative">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-linear-to-r from-purple-400 to-cyan-400"></div>
+                <label className="text-xs font-medium text-cyan-300/90 tracking-wider">
+                  START & END TIME
+                </label>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  type="datetime-local"
+                  label="Start Time"
+                  value={form.start_time.slice(0, 16)}
+                  onChange={(e) => {
+                    const dateValue = e.target.value;
+                    if (dateValue) {
+                      const year = parseInt(dateValue.split("-")[0]);
+                      if (year > 1900 && year < 2100) {
+                        setForm((p) => ({
+                          ...p,
+                          start_time: dateValue + ":00",
+                        }));
+                      } else {
+                        alert("Please enter a valid year (1900-2100)");
+                      }
+                    }
+                  }}
+                  className="w-full"
+                />
+                <Input
+                  type="datetime-local"
+                  label="End Time"
+                  value={form.end_time.slice(0, 16)}
+                  onChange={(e) => {
+                    const dateValue = e.target.value;
+                    if (dateValue) {
+                      const year = parseInt(dateValue.split("-")[0]);
+                      if (year > 1900 && year < 2100) {
+                        setForm((p) => ({ ...p, end_time: dateValue + ":00" }));
+                      } else {
+                        alert("Please enter a valid year (1900-2100)");
+                      }
+                    }
+                  }}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="mt-6 flex justify-end">
           <Button
@@ -641,6 +689,45 @@ export default function CertificatesPage() {
                           </option>
                         ))}
                       </select>
+                    </div>
+                    <div className="mt-3 text-xs text-slate-400 bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-cyan-300">selected:</span>{" "}
+                      <span className="text-slate-200">
+                        {userMap.get(editing.user_id) || `#${editing.user_id}`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="relative group">
+                    <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
+                      Start-End
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="datetime-local"
+                        label="Start Time"
+                        value={editing.start_time.slice(0, 16)}
+                        onChange={(e) => {
+                          const dateValue = e.target.value;
+                          if (dateValue) {
+                            setEditing((p) =>
+                              p ? { ...p, start_time: dateValue + ":00" } : p,
+                            );
+                          }
+                        }}
+                      />
+                      <Input
+                        type="datetime-local"
+                        label="End Time"
+                        value={editing.end_time.slice(0, 16)}
+                        onChange={(e) => {
+                          const dateValue = e.target.value;
+                          if (dateValue) {
+                            setEditing((p) =>
+                              p ? { ...p, end_time: dateValue + ":00" } : p,
+                            );
+                          }
+                        }}
+                      />
                     </div>
                     <div className="mt-3 text-xs text-slate-400 bg-white/5 rounded-lg px-3 py-2">
                       <span className="text-cyan-300">selected:</span>{" "}

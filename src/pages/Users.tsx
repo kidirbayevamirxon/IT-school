@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Input, Card, cn } from "../Components/ui";
 import { createUser, listUsers, updateUser } from "../api/users";
 import type { User } from "../api/users";
+import PhoneInput from "../Components/ui/PhoneInput";
 
 const emptyForm = {
   first_name: "",
   last_name: "",
   middle_name: "",
   birthday: "",
-  phone: "",
+  phone: "+998",
   login: "",
   password: "",
   role: "USER",
@@ -338,14 +339,11 @@ export default function UsersPage() {
                   className="group px-6 py-4 transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-500/5 hover:via-blue-500/3 hover:to-cyan-500/5"
                 >
                   <div className="grid grid-cols-12 gap-4 items-center">
-                    {/* ID */}
                     <div className="col-span-1">
                       <span className="font-mono text-sm text-cyan-300 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 px-2 py-1 rounded-lg">
                         #{user.id}
                       </span>
                     </div>
-
-                    {/* Full Name */}
                     <div className="col-span-3">
                       <div className="text-sm font-medium text-white">
                         {formatFullName(user)}
@@ -356,25 +354,17 @@ export default function UsersPage() {
                         </div>
                       )}
                     </div>
-
-                    {/* Login */}
                     <div className="col-span-2">
                       <div className="text-sm text-slate-200 font-mono">
                         @{user.login}
                       </div>
                     </div>
-
-                    {/* Role */}
                     <div className="col-span-2">
                       <RoleBadge role={user.role} />
                     </div>
-
-                    {/* Status */}
                     <div className="col-span-2">
                       <StatusBadge isActive={user.is_active} />
                     </div>
-
-                    {/* Actions */}
                     <div className="col-span-2">
                       <div className="flex items-center justify-end">
                         <Button
@@ -395,7 +385,6 @@ export default function UsersPage() {
                 </div>
               ))
             ) : (
-              // Empty state
               <div className="px-6 py-12 text-center">
                 <div className="mb-4 text-5xl opacity-30">👥</div>
                 <div className="text-lg font-medium text-slate-300 mb-2">
@@ -409,8 +398,6 @@ export default function UsersPage() {
           </div>
         </div>
       </Card>
-
-      {/* Create New User */}
       <Card glowing className="mb-8 border-none">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
           <div>
@@ -421,7 +408,6 @@ export default function UsersPage() {
               Add a new user to the quantum system
             </div>
           </div>
-
           <div className="flex items-center gap-3 mt-3 sm:mt-0">
             <Badge tone="cyan">POST /users</Badge>
             <div className="text-xs text-slate-500 font-mono">
@@ -429,9 +415,7 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-
         <div className="grid gap-4 sm:grid-cols-3">
-          {/* Personal Info Column */}
           <div className="space-y-4">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -445,7 +429,6 @@ export default function UsersPage() {
                 className="backdrop-blur-sm"
               />
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <Input
@@ -458,7 +441,6 @@ export default function UsersPage() {
                 className="backdrop-blur-sm"
               />
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <Input
@@ -472,35 +454,29 @@ export default function UsersPage() {
               />
             </div>
           </div>
-
-          {/* Contact Info Column */}
           <div className="space-y-4">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <Input
+                type="date"
                 label="Birthday"
                 value={form.birthday}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, birthday: e.target.value }))
                 }
-                placeholder="YYYY-MM-DD"
-                className="backdrop-blur-sm"
+                max={new Date().toISOString().split("T")[0]}
+                min="1900-01-01"
+                className="backdrop-blur-sm [color-scheme:dark]"
               />
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
+              <PhoneInput
                 label="Phone"
                 value={form.phone}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, phone: e.target.value }))
-                }
-                placeholder="+998 XX XXX XX XX"
-                className="backdrop-blur-sm"
+                onChange={(value) => setForm((p) => ({ ...p, phone: value }))}
               />
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <Input
@@ -514,8 +490,6 @@ export default function UsersPage() {
               />
             </div>
           </div>
-
-          {/* Account Info Column */}
           <div className="space-y-4">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -530,7 +504,6 @@ export default function UsersPage() {
                 className="backdrop-blur-sm"
               />
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <div>
@@ -556,7 +529,6 @@ export default function UsersPage() {
                 </select>
               </div>
             </div>
-
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               <div>
@@ -587,8 +559,6 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-
-        {/* Create Button */}
         <div className="mt-6 flex justify-end">
           <Button
             onClick={onCreate}
@@ -609,18 +579,12 @@ export default function UsersPage() {
           </Button>
         </div>
       </Card>
-
-      {/* Edit Modal - Cosmic Style */}
       {editing && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="relative w-full max-w-4xl">
-            {/* Modal glow effect */}
             <div className="absolute -inset-[2px] rounded-3xl bg-gradient-to-r from-purple-500/30 via-blue-500/20 to-cyan-500/30 blur-2xl opacity-40" />
             <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-purple-400/20 via-blue-400/15 to-cyan-400/20 blur opacity-50" />
-
-            {/* Modal content */}
             <div className="relative rounded-3xl bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-900/95 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl">
-              {/* Modal header */}
               <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
                 <div>
                   <h3 className="text-xl font-bold bg-gradient-to-r from-purple-200 via-white to-cyan-200 bg-clip-text text-transparent">
@@ -638,8 +602,6 @@ export default function UsersPage() {
                   <span className="text-lg">✕</span>
                 </Button>
               </div>
-
-              {/* Modal body */}
               <div className="p-6">
                 <div className="grid gap-4 sm:grid-cols-3 mb-6">
                   <Input
@@ -652,7 +614,6 @@ export default function UsersPage() {
                     }
                     className="backdrop-blur-sm"
                   />
-
                   <Input
                     label="Last Name"
                     value={editing.last_name}
@@ -663,7 +624,6 @@ export default function UsersPage() {
                     }
                     className="backdrop-blur-sm"
                   />
-
                   <Input
                     label="Middle Name"
                     value={editing.middle_name}
@@ -674,7 +634,6 @@ export default function UsersPage() {
                     }
                     className="backdrop-blur-sm"
                   />
-
                   <Input
                     label="Birthday"
                     value={editing.birthday}
@@ -686,18 +645,13 @@ export default function UsersPage() {
                     placeholder="YYYY-MM-DD"
                     className="backdrop-blur-sm"
                   />
-
-                  <Input
+                  <PhoneInput
                     label="Phone"
                     value={editing.phone}
-                    onChange={(e) =>
-                      setEditing((p) =>
-                        p ? { ...p, phone: e.target.value } : p,
-                      )
+                    onChange={(value) =>
+                      setEditing((p) => (p ? { ...p, phone: value } : p))
                     }
-                    className="backdrop-blur-sm"
                   />
-
                   <Input
                     label="Login"
                     value={editing.login}
@@ -708,7 +662,6 @@ export default function UsersPage() {
                     }
                     className="backdrop-blur-sm"
                   />
-
                   <div className="sm:col-span-2">
                     <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
                       ROLE
@@ -732,7 +685,6 @@ export default function UsersPage() {
                       </option>
                     </select>
                   </div>
-
                   <div>
                     <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
                       STATUS
