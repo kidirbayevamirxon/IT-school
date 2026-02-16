@@ -158,7 +158,7 @@ export default function UsersPage() {
   }
 
   const formatFullName = (user: User) => {
-    return `${user.last_name} ${user.first_name} ${user.middle_name}`.trim();
+    return `${user.last_name} ${user.first_name}`.trim();
   };
 
   return (
