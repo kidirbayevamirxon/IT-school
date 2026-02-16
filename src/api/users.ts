@@ -24,11 +24,11 @@ export type UserList = {
 export type CreateUserBody = {
   first_name: string;
   last_name: string;
-  middle_name: string;
-  birthday: string;
-  phone: string;
-  login: string;
-  password: string;
+  middle_name: string | null;
+  birthday: string | null;
+  phone: string | null;
+  login: string | null;
+  password: string | null;
   role: "USER" | "ADMIN" | string;
   is_active: boolean;
 };

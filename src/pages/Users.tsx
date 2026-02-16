@@ -2,16 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Input, Card, cn } from "../Components/ui";
 import { createUser, listUsers, updateUser } from "../api/users";
 import type { User } from "../api/users";
-import PhoneInput from "../Components/ui/PhoneInput";
 
 const emptyForm = {
   first_name: "",
   last_name: "",
-  middle_name: "",
-  birthday: "",
-  phone: "+998",
-  login: "",
-  password: "",
   role: "USER",
   is_active: true,
 };
@@ -123,11 +117,6 @@ export default function UsersPage() {
   };
 
   async function onCreate() {
-    if (!form.login.trim() || !form.password.trim()) {
-      showSuccess("Login and password are required!");
-      return;
-    }
-
     try {
       const created = await createUser({
         ...form,
@@ -415,154 +404,26 @@ export default function UsersPage() {
             </div>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="space-y-4">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+        <div className="grid gap-4 sm:grid-cols-2 w-full">
+          {["first_name", "last_name"].map((field) => (
+            <div key={field} className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 group-focus-within:opacity-50 transition-opacity duration-300"></div>
               <Input
-                label="First Name"
-                value={form.first_name}
+                label={field === "first_name" ? "First Name" : "Last Name"}
+                value={form[field]}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, first_name: e.target.value }))
+                  setForm((p) => ({ ...p, [field]: e.target.value }))
                 }
-                placeholder="Enter first name"
+                placeholder={`Enter ${field.replace("_", " ")}`}
                 className="backdrop-blur-sm"
               />
             </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                label="Last Name"
-                value={form.last_name}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, last_name: e.target.value }))
-                }
-                placeholder="Enter last name"
-                className="backdrop-blur-sm"
-              />
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                label="Middle Name"
-                value={form.middle_name}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, middle_name: e.target.value }))
-                }
-                placeholder="Enter middle name"
-                className="backdrop-blur-sm"
-              />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                type="date"
-                label="Birthday"
-                value={form.birthday}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, birthday: e.target.value }))
-                }
-                max={new Date().toISOString().split("T")[0]}
-                min="1900-01-01"
-                className="backdrop-blur-sm [color-scheme:dark]"
-              />
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <PhoneInput
-                label="Phone"
-                value={form.phone}
-                onChange={(value) => setForm((p) => ({ ...p, phone: value }))}
-              />
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                label="Login"
-                value={form.login}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, login: e.target.value }))
-                }
-                placeholder="Enter username"
-                className="backdrop-blur-sm"
-              />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                label="Password"
-                type="password"
-                value={form.password}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, password: e.target.value }))
-                }
-                placeholder="Enter secure password"
-                className="backdrop-blur-sm"
-              />
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <div>
-                <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
-                  ROLE
-                </label>
-                <select
-                  className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
-                    ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
-                    hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40
-                    appearance-none cursor-pointer"
-                  value={form.role}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, role: e.target.value }))
-                  }
-                >
-                  <option value="USER" className="bg-slate-900">
-                    USER
-                  </option>
-                  <option value="ADMIN" className="bg-slate-900">
-                    ADMIN
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <div>
-                <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
-                  STATUS
-                </label>
-                <select
-                  className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
-                    ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
-                    hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40
-                    appearance-none cursor-pointer"
-                  value={String(form.is_active)}
-                  onChange={(e) =>
-                    setForm((p) => ({
-                      ...p,
-                      is_active: e.target.value === "true",
-                    }))
-                  }
-                >
-                  <option value="true" className="bg-slate-900">
-                    O'qiyapdi (active)
-                  </option>
-                  <option value="false" className="bg-slate-900">
-                    O'qimayapdi (inactive)
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
+
         <div className="mt-6 flex justify-end">
           <Button
             onClick={onCreate}
-            disabled={!form.login.trim() || !form.password.trim()}
             variant="cosmic"
             className="group relative overflow-hidden"
           >
@@ -624,92 +485,6 @@ export default function UsersPage() {
                     }
                     className="backdrop-blur-sm"
                   />
-                  <Input
-                    label="Middle Name"
-                    value={editing.middle_name}
-                    onChange={(e) =>
-                      setEditing((p) =>
-                        p ? { ...p, middle_name: e.target.value } : p,
-                      )
-                    }
-                    className="backdrop-blur-sm"
-                  />
-                  <Input
-                    label="Birthday"
-                    value={editing.birthday}
-                    onChange={(e) =>
-                      setEditing((p) =>
-                        p ? { ...p, birthday: e.target.value } : p,
-                      )
-                    }
-                    placeholder="YYYY-MM-DD"
-                    className="backdrop-blur-sm"
-                  />
-                  <PhoneInput
-                    label="Phone"
-                    value={editing.phone}
-                    onChange={(value) =>
-                      setEditing((p) => (p ? { ...p, phone: value } : p))
-                    }
-                  />
-                  <Input
-                    label="Login"
-                    value={editing.login}
-                    onChange={(e) =>
-                      setEditing((p) =>
-                        p ? { ...p, login: e.target.value } : p,
-                      )
-                    }
-                    className="backdrop-blur-sm"
-                  />
-                  <div className="sm:col-span-2">
-                    <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
-                      ROLE
-                    </label>
-                    <select
-                      className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
-                        ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
-                        hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40"
-                      value={editing.role}
-                      onChange={(e) =>
-                        setEditing((p) =>
-                          p ? { ...p, role: e.target.value } : p,
-                        )
-                      }
-                    >
-                      <option value="USER" className="bg-slate-900">
-                        USER
-                      </option>
-                      <option value="ADMIN" className="bg-slate-900">
-                        ADMIN
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-xs font-medium text-cyan-300/90 tracking-wider">
-                      STATUS
-                    </label>
-                    <select
-                      className="w-full rounded-2xl bg-gradient-to-br from-white/10 via-white/8 to-white/5 px-4 py-3 text-slate-100 
-                        ring-1 ring-white/15 backdrop-blur-sm outline-none transition-all duration-300
-                        hover:ring-cyan-300/30 focus:ring-2 focus:ring-cyan-300/40"
-                      value={String(editing.is_active)}
-                      onChange={(e) =>
-                        setEditing((p) =>
-                          p
-                            ? { ...p, is_active: e.target.value === "true" }
-                            : p,
-                        )
-                      }
-                    >
-                      <option value="true" className="bg-slate-900">
-                        ACTIVE
-                      </option>
-                      <option value="false" className="bg-slate-900">
-                        INACTIVE
-                      </option>
-                    </select>
-                  </div>
                 </div>
                 <div className="rounded-2xl bg-gradient-to-r from-purple-500/10 via-blue-500/8 to-cyan-500/10 p-4 ring-1 ring-white/10">
                   <div className="flex items-center gap-3">
