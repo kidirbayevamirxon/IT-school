@@ -331,11 +331,11 @@ export default function CoursesPage() {
               <div className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"></div>
               <label className="text-xs font-medium text-cyan-300/90 tracking-wider">COURSE NAME</label>
             </div>
-            <Input
+            <textarea
               value={form.name}
               onChange={(e) => setForm({ name: e.target.value })}
               placeholder="Enter course name (e.g., Quantum Physics 101)"
-              className="backdrop-blur-sm"
+              className="backdrop-blur-sm w-full p-3"
             />
             <div className="mt-2 text-xs text-slate-400">
               {form.name.length}/100 characters
