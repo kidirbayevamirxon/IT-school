@@ -2,14 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Input, Card, cn } from "../Components/ui";
 import { createUser, listUsers, updateUser } from "../api/users";
 import type { User } from "../api/users";
+import type { CreateUserBody } from "../api/users";
 
-const emptyForm = {
+const emptyForm: CreateUserBody = {
   first_name: "",
   last_name: "",
+  middle_name: null,
+  birthday: null,
+  phone: null,
+  login: null,
+  password: null,
   role: "USER",
   is_active: true,
 };
-
 function StatusBadge({ isActive }: { isActive: boolean }) {
   return (
     <div className="relative group">
@@ -84,7 +89,7 @@ export default function UsersPage() {
   const [offset, setOffset] = useState(0);
   const limit = 20;
 
-  const [form, setForm] = useState({ ...emptyForm });
+const [form, setForm] = useState<CreateUserBody>(emptyForm);
   const [editing, setEditing] = useState<User | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -116,22 +121,19 @@ export default function UsersPage() {
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  async function onCreate() {
-    try {
-      const created = await createUser({
-        ...form,
-        role: form.role as any,
-        is_active: Boolean(form.is_active),
-      });
-      setItems((p) => [created, ...p]);
-      setForm({ ...emptyForm });
-      setTotal((t) => t + 1);
-      showSuccess(`User "${created.login}" created successfully!`);
-    } catch (error) {
-      console.error("Failed to create user:", error);
-      showSuccess("Failed to create user!");
-    }
+ async function onCreate() {
+  try {
+    const created = await createUser(form);
+    setItems((p) => [created, ...p]);
+    setForm(emptyForm);
+    setTotal((t) => t + 1);
+    showSuccess(`User "${created.login}" created successfully!`);
+  } catch (error) {
+    console.error("Failed to create user:", error);
+    showSuccess("Failed to create user!");
   }
+}
+
 
   async function onUpdate() {
     if (!editing) return;
@@ -405,20 +407,17 @@ export default function UsersPage() {
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 w-full">
-          {["first_name", "last_name"].map((field) => (
-            <div key={field} className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/15 via-blue-400/10 to-cyan-400/15 rounded-2xl blur opacity-0 group-hover:opacity-50 group-focus-within:opacity-50 transition-opacity duration-300"></div>
-              <Input
-                label={field === "first_name" ? "First Name" : "Last Name"}
-                value={form[field]}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, [field]: e.target.value }))
-                }
-                placeholder={`Enter ${field.replace("_", " ")}`}
-                className="backdrop-blur-sm"
-              />
-            </div>
-          ))}
+          {(["first_name", "last_name"] as const).map((field) => (
+  <Input
+    key={field}
+    label={field === "first_name" ? "First Name" : "Last Name"}
+    value={form[field]}
+    onChange={(e) =>
+      setForm((p) => ({ ...p, [field]: e.target.value }))
+    }
+  />
+))}
+
         </div>
 
         <div className="mt-6 flex justify-end">
